@@ -37,25 +37,22 @@
       overflow-x: hidden;
     }
 
-    /* STARS */
     #stars {
       position: fixed;
       inset: 0;
       pointer-events: none;
       z-index: 0;
       overflow: hidden;
+      background-image: url('ctio.jpeg');
+      background-size: cover;
+      background-position: center top;
     }
-    .star {
+
+    #stars::after {
+      content: '';
       position: absolute;
-      background: white;
-      border-radius: 50%;
-      animation: twinkle var(--d, 4s) ease-in-out infinite alternate;
-      animation-delay: var(--delay, 0s);
-      opacity: var(--op, 0.6);
-    }
-    @keyframes twinkle {
-      from { opacity: var(--op, 0.6); transform: scale(1); }
-      to   { opacity: calc(var(--op, 0.6) * 0.2); transform: scale(0.7); }
+      inset: 0;
+      background: rgba(8, 6, 18, 0.72);
     }
 
     /* NAV */
@@ -573,7 +570,7 @@
             <span class="tag">Python</span>
             <span class="tag">Astrophysics</span>
             <span class="tag">Near-field Cosmology</span>
-            <span class="tag">Big Data</span>
+            <span class="tag">Large Survey Data</span>
           </div>
         </div>
       </div>
@@ -605,7 +602,6 @@
             <span class="tag">SDSS-V</span>
             <span class="tag">ISM Survey</span>
             <span class="tag">Remote Observing</span>
-            <span class="tag">Data Analysis</span>
           </div>
         </div>
       </div>
