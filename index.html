@@ -332,56 +332,6 @@
     }
     .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
 
-    /* INTERESTS */
-    #interests .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5px;
-      background: var(--border-purple);
-      border: 1px solid var(--border-purple);
-    }
-    .interest-card {
-      background: var(--ink);
-      padding: 2.5rem 2rem;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.3s;
-    }
-    .interest-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 3px; height: 0;
-      background: var(--purple-light);
-      transition: height 0.4s;
-    }
-    .interest-card::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: var(--gold-dim);
-    }
-    .interest-card:hover { background: #130f1e; }
-    .interest-card:hover::before { height: 100%; }
-    .interest-icon {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      display: block;
-      color: var(--gold);
-    }
-    .interest-card h3 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: var(--white);
-    }
-    .interest-card p {
-      font-size: 0.88rem;
-      color: var(--dim);
-      line-height: 1.6;
-    }
-
     /* RESEARCH */
     #research { background: var(--ink); }
     .research-grid { display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
@@ -541,7 +491,6 @@
 
 <nav id="nav">
   <ul class="nav-links">
-    <li><a href="#interests">Interests</a></li>
     <li><a href="#research">Research</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -599,48 +548,6 @@
             <span class="plabel">UW Physics</span>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<!-- INTERESTS -->
-<section id="interests">
-  <div class="wrapper">
-    <p class="section-label reveal"></p>
-    <h2 class="section-title reveal">Areas of focus</h2>
-    <div class="grid reveal">
-      <div class="interest-card">
-        <span class="interest-icon">✦</span>
-        <h3>Near-field Cosmology</h3>
-        <p>Mapping faint substructures like stellar streams in the Milky Way's halo to understand galaxy formation and dark matter distribution.</p>
-      </div>
-      <div class="interest-card">
-        <span class="interest-icon">◎</span>
-        <h3>Signal Processing</h3>
-        <p>Developing novel algorithms for noise reduction in astronomical data and neuroimaging (EEG/MEG).</p>
-      </div>
-      <div class="interest-card">
-        <span class="interest-icon">⬡</span>
-        <h3>Astronomy with Big Survey Data</h3>
-        <p>Building efficient pipelines filter and process large survey datasets: making observational astronomy scalable for the future.</p>
-      </div>
-      <div class="interest-card">
-        <span class="interest-icon">◻</span>
-        <h3>Spectroscopy</h3>
-        <p>Applying spectroscopic techniques to study dwarf galaxies and the interstellar medium, including practical observations at notable facilities.</p>
-      </div>
-      <div class="interest-card">
-        <span class="interest-icon">∿</span>
-        <h3>Philosophy of Science</h3>
-        <p>Exploring epistemology and the foundations of scientific reasoning: how can we know what we know about the universe?</p>
-      </div>
-      <div class="interest-card">
-        <span class="interest-icon">⊕</span>
-        <h3>International Relations</h3>
-        <p>Forging international relations between astronomers in the US, Chile, and worldwide. Advocating for civil rights in Perú.</p>
       </div>
     </div>
   </div>
