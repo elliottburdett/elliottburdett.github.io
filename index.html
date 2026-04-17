@@ -294,6 +294,16 @@
     .pw-3 .plabel { top: -185px; left: 10px; transform: translate(0,-50%); }
     .pw-4 .plabel { top: -4px; left: -128px; transform: translate(-100%,0); }
 
+    /* Faster Orbit Speeds */
+    .orbit.fast, .planet-wrapper.fast {
+      animation-duration: 1s !important; /* Forces everything to a 1s loop */
+    }
+
+    /* Optional: Make the photo spin faster too */
+    .photo-circle.fast {
+      animation-duration: 2s !important;
+    }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -509,6 +519,7 @@
         </p>
         <div class="hero-links">
           <a href="mailto:elliottburdett@gmail.com" class="btn btn-primary">Get in touch</a>
+          <button id="speed-toggle" class="btn btn-ghost">Speed Up</button>
           <a href="#research" class="btn btn-ghost">View research</a>
           <a href="https://github.com/elliottburdett" class="btn btn-ghost" target="_blank">GitHub</a>
           <a href="https://linkedin.com/in/elliott-burdett-823756299" class="btn btn-ghost" target="_blank">LinkedIn</a>
@@ -683,6 +694,22 @@
     s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${3+Math.random()*6}s;--delay:${Math.random()*8}s;--op:${0.15+Math.random()*0.7};`;
     starsEl.appendChild(s);
   }
+
+  const speedBtn = document.getElementById('speed-toggle');
+  const speedElements = document.querySelectorAll('.orbit, .planet-wrapper, .photo-circle');
+
+  speedBtn.addEventListener('click', () => {
+    speedElements.forEach(el => {
+      el.classList.toggle('fast');
+    });
+    
+    // Optional: Change button text based on state
+    if (speedElements[0].classList.contains('fast')) {
+      speedBtn.textContent = "Normal Speed 🛰️";
+    } else {
+      speedBtn.textContent = "Hyperdrive 🚀";
+    }
+  });
 
   // Nav
   const nav = document.getElementById('nav');
