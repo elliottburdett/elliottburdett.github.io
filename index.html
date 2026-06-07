@@ -9,7 +9,6 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --black: #0a0a0f;
       --white: #f5f2eb;
       --gold: #B7A57A;
       --purple: #4B2E83;
@@ -21,15 +20,14 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--black);
+      background: #0a0a0f;
       color: var(--white);
       font-family: 'EB Garamond', serif;
-      font-size: 1rem;
-      line-height: 1.75;
+      font-size: 1.2rem;
+      line-height: 1.8;
       overflow-x: hidden;
     }
 
-    /* Background image */
     #bg {
       position: fixed;
       inset: 0;
@@ -46,7 +44,6 @@
       background: rgba(8, 6, 18, 0.75);
     }
 
-    /* NAV */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -66,14 +63,14 @@
     }
     nav a:hover { color: var(--white); }
 
-    /* LAYOUT */
     .wrapper {
       position: relative;
       z-index: 1;
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 2.5rem;
     }
+
     section { padding: 5rem 0; }
     hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; position: relative; z-index: 1; }
 
@@ -92,8 +89,8 @@
       width: 100%;
     }
     h1 {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      line-height: 1.1;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 1.05;
       font-weight: 400;
       margin-bottom: 0.4rem;
     }
@@ -102,10 +99,9 @@
       color: var(--dim);
       margin-bottom: 1.5rem;
     }
-    .hero-bio { color: rgba(245,242,235,0.75); max-width: 520px; margin-bottom: 1rem; }
+    .hero-bio { color: rgba(245,242,235,0.8); margin-bottom: 1rem; }
     .hero-links { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
 
-    /* Headshot */
     .headshot {
       width: 160px;
       height: 160px;
@@ -121,7 +117,6 @@
       object-position: center top;
     }
 
-    /* BUTTONS */
     .btn {
       font-family: 'Inconsolata', monospace;
       font-size: 0.75rem;
@@ -138,83 +133,70 @@
     .btn-ghost { background: transparent; border-color: var(--border); color: var(--dim); }
     .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 
-    /* SECTIONS */
     h2 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 400;
       margin-bottom: 2rem;
     }
 
     /* RESEARCH */
     #research { background: rgba(14, 11, 20, 0.6); }
-    .research-grid { display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--border); }
     .research-card {
-      background: rgba(10, 10, 15, 0.85);
-      padding: 2rem;
+      padding: 2rem 0;
       border-bottom: 1px solid var(--border);
       position: relative;
     }
     .research-card:last-child { border-bottom: none; }
-    .research-org {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--purple-light);
+    .research-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
       margin-bottom: 0.3rem;
     }
-    .research-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; font-weight: 400; }
-    .research-card p { font-size: 0.92rem; color: var(--dim); line-height: 1.7; margin-bottom: 0.75rem; }
-    .research-card a { color: var(--gold); }
-    .date-badge {
-      position: absolute;
-      top: 2rem; right: 2rem;
+    .research-org {
       font-family: 'Inconsolata', monospace;
-      font-size: 0.65rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+    }
+    .date-badge {
+      font-family: 'Inconsolata', monospace;
+      font-size: 0.7rem;
       color: var(--dim);
       letter-spacing: 0.08em;
     }
-    .tag-row { display: flex; gap: 0.4rem; flex-wrap: wrap; }
-    .tag {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-      padding: 0.2rem 0.6rem;
-      border: 1px solid rgba(183,165,122,0.3);
-      color: var(--gold);
-      text-transform: uppercase;
-    }
+    .research-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; font-weight: 400; }
+    .research-card p { color: rgba(245,242,235,0.75); line-height: 1.75; }
+    .research-card a { color: var(--gold); }
 
     /* TIMELINE */
-    #experience { background: transparent; }
     .timeline { padding-left: 1.5rem; border-left: 1px solid var(--border); }
     .tl-item { margin-bottom: 2.5rem; padding-left: 1.5rem; position: relative; }
     .tl-item::before {
       content: '';
       position: absolute;
       left: -1.6rem;
-      top: 0.5rem;
+      top: 0.6rem;
       width: 8px; height: 8px;
       background: var(--gold);
       border-radius: 50%;
     }
     .tl-date {
       font-family: 'Inconsolata', monospace;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       letter-spacing: 0.12em;
       color: var(--gold);
       text-transform: uppercase;
       margin-bottom: 0.3rem;
     }
-    .tl-role { font-size: 1.1rem; margin-bottom: 0.1rem; }
-    .tl-org { font-size: 0.85rem; color: var(--purple-light); margin-bottom: 0.4rem; }
-    .tl-desc { font-size: 0.88rem; color: var(--dim); line-height: 1.65; max-width: 600px; }
+    .tl-role { font-size: 1.2rem; margin-bottom: 0.1rem; }
+    .tl-org { font-size: 1rem; color: var(--purple-light); margin-bottom: 0.5rem; }
+    .tl-desc { color: rgba(245,242,235,0.7); }
 
-    /* CONTACT */
     #contact { text-align: center; }
     .contact-links { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
 
-    /* FOOTER */
     footer {
       position: relative;
       z-index: 1;
@@ -226,11 +208,10 @@
       color: rgba(138,138,153,0.5);
     }
 
-    /* RESPONSIVE */
     @media (max-width: 640px) {
       .hero-inner { grid-template-columns: 1fr; }
-      .headshot { width: 120px; height: 120px; }
-      .date-badge { position: static; display: block; margin-bottom: 0.4rem; }
+      .headshot { width: 110px; height: 110px; }
+      .research-meta { flex-direction: column; gap: 0.2rem; }
     }
   </style>
 </head>
@@ -244,19 +225,14 @@
   <a href="#contact">Contact</a>
 </nav>
 
-<!-- HERO -->
 <section id="hero">
   <div class="wrapper">
     <div class="hero-inner">
       <div class="hero-text">
         <h1>Elliott Burdett</h1>
         <p class="hero-title">He / Him · Seattle, Washington</p>
-        <p class="hero-bio">
-          Third-year undergraduate at the University of Washington pursuing a BS in Physics and Astronomy and a BA in Philosophy.
-        </p>
-        <p class="hero-bio">
-          My research focuses on identifying structures that can serve as laboratories to test ΛCDM's predictions about structure formation. I'm interested in doing cosmology with both individual observations and large survey data. Applying to graduate programs Autumn 2026!
-        </p>
+        <p class="hero-bio">Third-year undergraduate at the University of Washington pursuing a BS in Physics and Astronomy and a BA in Philosophy.</p>
+        <p class="hero-bio">My research focuses on identifying structures that can serve as laboratories to test ΛCDM's predictions about structure formation. I'm interested in doing cosmology with both individual observations and large survey data. Applying to graduate programs Autumn 2026!</p>
         <div class="hero-links">
           <a href="mailto:elliottburdett@gmail.com" class="btn btn-primary">Get in touch</a>
           <a href="#research" class="btn btn-ghost">View research</a>
@@ -273,70 +249,51 @@
 
 <hr class="divider" />
 
-<!-- RESEARCH -->
 <section id="research">
   <div class="wrapper">
     <h2>Research projects</h2>
-    <div class="research-grid">
 
-      <div class="research-card">
-        <p class="research-org">UW DiRAC Institute</p>
+    <div class="research-card">
+      <div class="research-meta">
+        <span class="research-org">UW DiRAC Institute</span>
         <span class="date-badge">Jan 2025 – Present</span>
-        <h3>Stellar Stream Characterization</h3>
-        <p>Seeking to characterize stellar streams using large survey data. Built a computational framework to efficiently filter massive datasets, enabling scalable study of Milky Way substructure. Created exhaustive catalogs of likely stream members. Aided in DELVE observations. Project details available <a href="https://github.com/elliottburdett/spreading_seas">here!</a></p>
-        <div class="tag-row">
-          <span class="tag">Python</span>
-          <span class="tag">Astrophysics</span>
-          <span class="tag">Near-field Cosmology</span>
-          <span class="tag">Large Survey Data</span>
-        </div>
       </div>
-
-      <div class="research-card">
-        <p class="research-org">NSF NOIRLab · REU</p>
-        <span class="date-badge">Jan – Mar 2026</span>
-        <h3>Dwarf Galaxy Spectroscopy</h3>
-        <p>Developed an image reduction pipeline and performed spectroscopy on dwarf galaxies. Conducted on-site observations at Cerro Tololo Inter-American Observatory near La Serena, Chile. Project details available <a href="https://github.com/elliottburdett/catch_dgs_in_nw">here!</a></p>
-        <div class="tag-row">
-          <span class="tag">Spectroscopy</span>
-          <span class="tag">Image Reduction</span>
-          <span class="tag">Dwarf Galaxies</span>
-          <span class="tag">CTIO</span>
-        </div>
-      </div>
-
-      <div class="research-card">
-        <p class="research-org">Carnegie Las Campanas Observatory</p>
-        <span class="date-badge">Nov 2024 – Jun 2025</span>
-        <h3>Local Volume Mapper — Remote Observer</h3>
-        <p>Remotely observed for the Local Volume Mapper, a flagship survey of the interstellar medium conducted as part of the Sloan Digital Sky Survey (SDSS-V).</p>
-        <div class="tag-row">
-          <span class="tag">SDSS-V</span>
-          <span class="tag">ISM Survey</span>
-          <span class="tag">Remote Observing</span>
-        </div>
-      </div>
-
-      <div class="research-card">
-        <p class="research-org">UW Department of Physics</p>
-        <span class="date-badge">Sep 2024 – Apr 2025</span>
-        <h3>EEG/MEG Sensor Noise Reduction</h3>
-        <p>Investigated a novel method of sensor noise reduction for electro- and magneto-encephalography (EEG/MEG) projects using signal processing in Python.</p>
-        <div class="tag-row">
-          <span class="tag">Signal Processing</span>
-          <span class="tag">Python</span>
-          <span class="tag">EEG / MEG</span>
-          <span class="tag">Physics</span>
-        </div>
-      </div>
-
+      <h3>Stellar Stream Characterization</h3>
+      <p>Seeking to characterize stellar streams using large survey data. Built a computational framework to efficiently filter massive datasets, enabling scalable study of Milky Way substructure. Created exhaustive catalogs of likely stream members. Aided in DELVE observations. Project details available <a href="https://github.com/elliottburdett/spreading_seas">here!</a></p>
     </div>
+
+    <div class="research-card">
+      <div class="research-meta">
+        <span class="research-org">NSF NOIRLab · REU</span>
+        <span class="date-badge">Jan – Mar 2026</span>
+      </div>
+      <h3>Dwarf Galaxy Spectroscopy</h3>
+      <p>Developed an image reduction pipeline and performed spectroscopy on dwarf galaxies. Conducted on-site observations at Cerro Tololo Inter-American Observatory near La Serena, Chile. Project details available <a href="https://github.com/elliottburdett/catch_dgs_in_nw">here!</a></p>
+    </div>
+
+    <div class="research-card">
+      <div class="research-meta">
+        <span class="research-org">Carnegie Las Campanas Observatory</span>
+        <span class="date-badge">Nov 2024 – Jun 2025</span>
+      </div>
+      <h3>Local Volume Mapper — Remote Observer</h3>
+      <p>Remotely observed for the Local Volume Mapper, a flagship survey of the interstellar medium conducted as part of the Sloan Digital Sky Survey (SDSS-V).</p>
+    </div>
+
+    <div class="research-card">
+      <div class="research-meta">
+        <span class="research-org">UW Department of Physics</span>
+        <span class="date-badge">Sep 2024 – Apr 2025</span>
+      </div>
+      <h3>EEG/MEG Sensor Noise Reduction</h3>
+      <p>Investigated a novel method of sensor noise reduction for electro- and magneto-encephalography (EEG/MEG) projects using signal processing in Python.</p>
+    </div>
+
   </div>
 </section>
 
 <hr class="divider" />
 
-<!-- EXPERIENCE -->
 <section id="experience">
   <div class="wrapper">
     <h2>Education &amp; teaching experience</h2>
@@ -362,7 +319,6 @@
 
 <hr class="divider" />
 
-<!-- CONTACT -->
 <section id="contact">
   <div class="wrapper">
     <h2>Contact Me</h2>
@@ -379,8 +335,7 @@
 </footer>
 
 <script>
-  // Nav scroll effect
-  const nav = document.getElementById('nav') || document.querySelector('nav');
+  const nav = document.querySelector('nav');
   window.addEventListener('scroll', () => {
     nav.style.background = window.scrollY > 60 ? 'rgba(10,10,15,0.9)' : '';
   });
