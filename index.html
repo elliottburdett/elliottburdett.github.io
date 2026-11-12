@@ -1,344 +1,498 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Elliott Burdett</title>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Inconsolata:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elliott Burdett</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spline+Sans+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a simulated survey field fills the window; one paper card with folder tabs floats on it, one tab per page. */
+:root {
+  --sky: #05070d;
+  --sky-ink: #eef2fb;
+  --sky-dim: #aab5cc;
+  --paper: #f7f4ee;
+  --paper-2: #e8e1d5;
+  --ink: #1b1915;
+  --muted: #625b51;
+  --rule: #ddd4c5;
+  --accent: #8e1b22;
+  --pine: #1f4a36;
+  --amber: #b97c12;
+  --amber-soft: #fbf1dc;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+  --display: "Times New Roman", Times, "Liberation Serif", serif;
+  --body: "Times New Roman", Times, "Liberation Serif", serif;
+  --mono: "Spline Sans Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #14120f; --paper-2: #241e18; --ink: #efe8dc; --muted: #aba190; --rule: #352c23;
+    --accent: #ff9389; --pine: #93d3a9; --amber: #f2b64c; --amber-soft: #2a2414; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #14120f; --paper-2: #241e18; --ink: #efe8dc; --muted: #aba190; --rule: #352c23;
+  --accent: #ff9389; --pine: #93d3a9; --amber: #f2b64c; --amber-soft: #2a2414; color-scheme: dark;
+}
 
-    :root {
-      --white: #f5f2eb;
-      --gold: #B7A57A;
-      --purple: #4B2E83;
-      --purple-light: #6a4aaa;
-      --dim: #8a8a99;
-      --border: rgba(183,165,122,0.2);
-    }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+html { background: var(--sky); }
+body {
+  margin: 0;
+  background: var(--sky);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 18px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+#bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+}
+#bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; display: block; max-width: none; }
+#bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(6, 12, 24, 0.55) 0%, rgba(6, 12, 24, 0.15) 32%, rgba(6, 12, 24, 0.1) 70%, rgba(6, 12, 24, 0.55) 100%);
+}
+.page {
+  position: relative; z-index: 1;
+  max-width: 1080px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 44px 28px;
+  display: flex; flex-direction: column; gap: 22px;
+}
 
-    html { scroll-behavior: smooth; }
+/* Header on the sky */
+.masthead { color: var(--sky-ink); text-shadow: 0 2px 10px rgba(0,0,0,0.85); display: grid; gap: 4px; }
+.masthead h1 {
+  color: #fff6e6;
+  text-shadow: 0 0 24px rgba(255, 214, 150, 0.6), 0 0 6px rgba(255, 236, 205, 0.5), 0 2px 0 rgba(0, 0, 0, 0.5), 0 6px 18px rgba(0, 0, 0, 0.55);
+  font-family: var(--display); font-weight: 500;
+  font-size: clamp(40px, 7vw, 64px); line-height: 1.02; letter-spacing: -0.01em; margin: 0;
+}
+.masthead p { margin: 0; font-size: 19px; color: var(--sky-dim); font-style: italic; }
+.masthead .coords {
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em; color: var(--sky-dim);
+  font-style: normal; margin-top: 6px;
+}
 
-    body {
-      background: #0a0a0f;
-      color: var(--white);
-      font-family: 'EB Garamond', serif;
-      font-size: 1.2rem;
-      line-height: 1.8;
-      overflow-x: hidden;
-    }
+/* Card with folder tabs */
+.card-wrap { display: flex; flex-direction: column; }
+.tabs {
+  display: flex; gap: 4px; padding-left: 14px; overflow-x: auto; scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tabs a {
+  flex: 0 0 auto;
+  font-family: var(--body); font-size: 17px; text-decoration: none;
+  color: var(--muted); background: var(--paper-2);
+  padding: 9px 18px 8px; border-radius: 9px 9px 0 0;
+  opacity: 0.86; transition: opacity 0.15s, color 0.15s;
+}
+.tabs a:hover { opacity: 1; color: var(--ink); }
+.tabs a[aria-current="page"] { background: var(--paper); color: var(--ink); opacity: 1; font-weight: 600; }
+.tabs a:focus-visible, a:focus-visible, button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+.card {
+  background: var(--paper); border-radius: 4px 12px 12px 12px; box-shadow: var(--shadow);
+  padding: clamp(22px, 4vw, 42px);
+}
+.view[hidden] { display: none !important; }
+.view h2 {
+  color: var(--pine);
+  font-family: var(--display); font-weight: 500;
+  font-size: 32px; line-height: 1.15; margin: 0 0 18px; text-wrap: balance;
+}
+.view h3 {
+  font-family: var(--display); font-weight: 600; font-size: 21px; line-height: 1.25; margin: 0; text-wrap: balance;
+}
+.view p { margin: 0; }
+.prose { display: flex; flex-direction: column; gap: 16px; max-width: 66ch; }
+a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+a:hover { text-decoration-thickness: 2px; }
+.label {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
 
-    #bg {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      background-image: url('ctio.jpeg');
-      background-size: cover;
-      background-position: center top;
-    }
-    #bg::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(8, 6, 18, 0.75);
-    }
+/* Home */
+.home { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: start; }
+.aside { display: flex; flex-direction: column; gap: 20px; }
+.photo { width: 100%; max-width: 100%; aspect-ratio: 1; height: auto; object-fit: cover; border-radius: 10px; display: block; }
+.contact { display: flex; flex-direction: column; gap: 10px; font-size: 16.5px; line-height: 1.45; }
+.email-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.email-row code { font-family: var(--mono); font-size: 14px; }
+.links { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 16.5px; }
+.notice { border-left: 2px solid var(--accent); padding: 2px 0 2px 14px; display: flex; flex-direction: column; gap: 4px; }
+.view .notice-main { font-family: var(--display); font-size: 20px; line-height: 1.3; font-weight: 600; }
+.notice-sub { font-size: 16px; color: var(--muted); }
+.lede { font-size: 21px; line-height: 1.5; }
 
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: flex-end;
-      gap: 2rem;
-    }
-    nav a {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.8rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--dim);
-      text-decoration: none;
-    }
-    nav a:hover { color: var(--white); }
+/* Research */
+.projects { display: flex; flex-direction: column; gap: 34px; }
+.project { display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 26px; align-items: start; }
+.project + .project { border-top: 1px solid var(--rule); padding-top: 34px; }
+.fig {
+  aspect-ratio: 4 / 3; max-width: 100%; border-radius: 8px; border: 1px dashed var(--rule);
+  background: var(--paper-2); display: grid; place-items: center; text-align: center; padding: 14px;
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.03em; color: var(--muted); line-height: 1.5;
+}
+.fig-img { width: 100%; max-width: 100%; height: auto; border-radius: 8px; display: block; background: #ffffff; }
+.project-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.table-wrap { overflow-x: auto; margin-top: 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 16px; min-width: 520px; }
+th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: baseline; }
+th { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-    .wrapper {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 0 2.5rem;
-    }
+/* Publications and CV */
+.pubs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
+.pubs li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 16px; }
+.pubs .yr { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 3px; font-variant-numeric: tabular-nums; }
+.pubs .t { font-style: italic; }
+.me { font-weight: 600; }
+.section-gap { display: flex; flex-direction: column; gap: 34px; }
+.cv-block { display: flex; flex-direction: column; gap: 12px; }
+.cv-block h3 { padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+.rows { display: flex; flex-direction: column; gap: 12px; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; }
+.row .when { font-family: var(--mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; padding-top: 4px; font-variant-numeric: tabular-nums; }
+.row .sub { grid-column: 1 / -1; color: var(--muted); font-size: 16px; }
+.cv-note { color: var(--muted); font-size: 16px; }
+.cv-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 
-    section { padding: 5rem 0; }
-    hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; position: relative; z-index: 1; }
+/* Personal */
+.personal { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: clamp(24px, 4vw, 48px); align-items: start; }
+.personal figure { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.personal figure img { border-radius: 10px; width: 100%; display: block; }
+.personal figcaption { font-size: 14.5px; color: var(--muted); line-height: 1.4; }
+.notes { display: flex; flex-direction: column; gap: 26px; }
+.coming-soon { margin: 0; font-size: 21px; color: var(--muted); }
+.note { display: flex; flex-direction: column; gap: 8px; max-width: 64ch; }
+.flags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.flag { border: 0; padding: 0; background: none; cursor: pointer; border-radius: 3px; transition: transform 0.15s; }
+.flag:hover { transform: translateY(-2px); }
+.flags img { width: 32px; height: 24px; border-radius: 2px; box-shadow: 0 0 0 1px var(--rule); display: block; }
+.flag[aria-pressed="true"] img { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--accent); }
+.travel-empty {
+  aspect-ratio: 3 / 4; max-width: 100%; border-radius: 10px; border: 1px dashed var(--rule); background: var(--paper-2);
+  display: grid; place-items: center; color: var(--muted); font-size: 16px;
+}
 
-    /* HERO */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 4rem;
-    }
-    .hero-inner {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 3rem;
-      align-items: start;
-      width: 100%;
-    }
-    h1 {
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      line-height: 1.05;
-      font-weight: 400;
-      margin-bottom: 0.4rem;
-    }
-    .hero-title {
-      font-style: italic;
-      color: var(--dim);
-      margin-bottom: 1.5rem;
-    }
-    .hero-bio { color: rgba(245,242,235,0.8); margin-bottom: 1rem; }
-    .hero-links { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.5rem; }
+/* Footer */
+footer { color: var(--sky-dim); font-size: 14.5px; text-shadow: 0 1px 6px rgba(0,0,0,0.9); display: flex; justify-content: space-between; gap: 8px 20px; flex-wrap: wrap; }
 
-    .headshot {
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px solid var(--gold);
-      flex-shrink: 0;
-    }
-    .headshot img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-    }
-
-    .btn {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 0.5rem 1.25rem;
-      border: 1px solid;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.2s, color 0.2s;
-    }
-    .btn-primary { background: var(--purple); border-color: var(--purple); color: var(--white); }
-    .btn-primary:hover { background: var(--purple-light); border-color: var(--purple-light); }
-    .btn-ghost { background: transparent; border-color: var(--border); color: var(--dim); }
-    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
-
-    h2 {
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 400;
-      margin-bottom: 2rem;
-    }
-
-    /* RESEARCH */
-    #research { background: rgba(14, 11, 20, 0.6); }
-    .research-card {
-      padding: 2rem 0;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-    .research-card:last-child { border-bottom: none; }
-    .research-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.3rem;
-    }
-    .research-org {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--purple-light);
-    }
-    .date-badge {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.7rem;
-      color: var(--dim);
-      letter-spacing: 0.08em;
-    }
-    .research-card h3 { font-size: 1.4rem; margin-bottom: 0.5rem; font-weight: 400; }
-    .research-card p { color: rgba(245,242,235,0.75); line-height: 1.75; }
-    .research-card a { color: var(--gold); }
-
-    /* TIMELINE */
-    .timeline { padding-left: 1.5rem; border-left: 1px solid var(--border); }
-    .tl-item { margin-bottom: 2.5rem; padding-left: 1.5rem; position: relative; }
-    .tl-item::before {
-      content: '';
-      position: absolute;
-      left: -1.6rem;
-      top: 0.6rem;
-      width: 8px; height: 8px;
-      background: var(--gold);
-      border-radius: 50%;
-    }
-    .tl-date {
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 0.3rem;
-    }
-    .tl-role { font-size: 1.2rem; margin-bottom: 0.1rem; }
-    .tl-org { font-size: 1rem; color: var(--purple-light); margin-bottom: 0.5rem; }
-    .tl-desc { color: rgba(245,242,235,0.7); }
-
-    #contact { text-align: center; }
-    .contact-links { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
-
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 1.5rem;
-      text-align: center;
-      font-family: 'Inconsolata', monospace;
-      font-size: 0.68rem;
-      color: rgba(138,138,153,0.5);
-    }
-
-    @media (max-width: 640px) {
-      .hero-inner { grid-template-columns: 1fr; }
-      .headshot { width: 110px; height: 110px; }
-      .research-meta { flex-direction: column; gap: 0.2rem; }
-    }
-  </style>
+@media (max-width: 820px) {
+  .home, .project, .personal { grid-template-columns: minmax(0, 1fr); }
+  .aside { max-width: 360px; }
+  .project .fig, .project .fig-img { max-width: 420px; }
+  .personal figure { max-width: 360px; }
+}
+@media (max-width: 520px) {
+  body { font-size: 17px; }
+  .page { padding-block: 28px 22px; }
+  .pubs li { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .lede { font-size: 19px; }
+  .tabs { padding-left: 8px; gap: 3px; }
+  .tabs a { padding: 8px 9px 7px; font-size: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tabs a, .flag { transition: none; }
+}
+</style>
 </head>
 <body>
+<div id="bg" aria-hidden="true"><img src="background.jpg" alt=""></div>
 
-<div id="bg"></div>
+<div class="page">
+  <header class="masthead">
+    <h1>Elliott Burdett</h1>
+    <p>Physics, astronomy, and philosophy at the University of Washington</p>
+  </header>
 
-<nav>
-  <a href="#research">Research</a>
-  <a href="#experience">Experience</a>
-  <a href="#contact">Contact</a>
-</nav>
+  <div class="card-wrap">
+    <nav class="tabs" aria-label="Pages">
+      <a href="#home" data-tab="home">Home</a>
+      <a href="#research" data-tab="research">Research</a>
+      <a href="#publications" data-tab="publications">Publications</a>
+      <a href="#cv" data-tab="cv">CV</a>
+      <a href="#personal" data-tab="personal">Personal</a>
+    </nav>
 
-<section id="hero">
-  <div class="wrapper">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <h1>Elliott Burdett</h1>
-        <p class="hero-title">He / Him · Seattle, Washington</p>
-        <p class="hero-bio">Third-year undergraduate at the University of Washington pursuing a BS in Physics and Astronomy and a BA in Philosophy.</p>
-        <p class="hero-bio">My research focuses on identifying structures that can serve as laboratories to test ΛCDM's predictions about structure formation. I'm interested in doing cosmology with both individual observations and large survey data. Applying to graduate programs Autumn 2026!</p>
-        <div class="hero-links">
-          <a href="mailto:elliottburdett@gmail.com" class="btn btn-primary">Get in touch</a>
-          <a href="#research" class="btn btn-ghost">View research</a>
-          <a href="https://github.com/elliottburdett" class="btn btn-ghost" target="_blank">GitHub</a>
-          <a href="https://linkedin.com/in/elliott-burdett-823756299" class="btn btn-ghost" target="_blank">LinkedIn</a>
+    <main class="card">
+      <!-- HOME -->
+      <section class="view" data-view="home">
+        <div class="home">
+          <aside class="aside">
+            <img class="photo" src="headshot.jpg" width="600" height="600" alt="Elliott Burdett">
+
+            <div class="contact">
+              <div class="label">Contact</div>
+              <div class="email-row"><code id="email-text">esb30 [at] uw.edu</code></div>
+              <div>Department of Astronomy<br>University of Washington, Box 351580<br>Seattle, WA 98195-1580</div>
+              <div class="links">
+                <a href="https://github.com/elliottburdett" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://orcid.org/0009-0006-9972-6937" target="_blank" rel="noopener">ORCID</a>
+                <a href="https://www.linkedin.com/in/elliott-burdett-823756299" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="https://ui.adsabs.harvard.edu/search/q=author%3A%22Burdett%2C%20E.%20S.%22&amp;sort=date%20desc%2C%20bibcode%20desc" target="_blank" rel="noopener">ADS</a>
+              </div>
+            </div>
+
+            <div class="notice" role="note">
+              <p class="notice-main">Sutlej paper coming soon!</p>
+            </div>
+          </aside>
+
+          <div class="prose">
+            <h2>About me</h2>
+            <p class="lede">I am a senior at the University of Washington studying physics, astronomy, and philosophy. I study stellar streams, the thin trails of disrupted dwarf galaxies and star clusters.</p>
+            <p>Streams record the gravitational potential of their host galaxy as they orbit, and give us information on dark matter substructure around the Milky Way. Identifying and characterizing a large population of streams is one of the few ways to test what dark matter does on small scales.</p>
+            <p>At UW's <a href="https://dirac.astro.washington.edu/" target="_blank" rel="noopener">DiRAC Institute</a> I'm part of the <a href="https://norashipp.com/" target="_blank" rel="noopener">stream team</a>, working with Nora Shipp and Peter Ferguson on streams in the DECam Local Volume Exploration survey (DELVE). I built a pipeline to search full survey catalogs for faint streams, and with it I found a diffuse extension of the Sutlej stream that may be debris from the ultra-faint satellite Tucana III.</p>
+            <p>In early 2026 I spent three months in La Serena, Chile, through the NOIRLab REU, hunting for faint dwarf galaxies around the spiral galaxy NGC 6744 with Bryan Miller at Gemini Observatory.</p>
+            <p>I'm applying to PhD programs for fall 2027. I aim to do cosmology with all sorts of faint objects, and eventually help lead the surveys that find them.</p>
+          </div>
         </div>
-      </div>
-      <div class="headshot">
-        <img src="headshot.jpg" alt="Elliott Burdett" />
-      </div>
-    </div>
+      </section>
+
+      <!-- RESEARCH -->
+      <section class="view" data-view="research" hidden>
+        <h2>Research</h2>
+        <div class="projects">
+          <article class="project">
+            <img class="fig-img" src="sutlej-matched-filter.gif" width="718" height="620" loading="lazy" alt="Animated matched-filter map of the Sutlej stream region in DELVE DR3, stepping through distance modulus 16 to 19, with the SMC, Tucana III, and Tucana IV labeled">
+            <div class="project-body">
+              <h3>Finding faint streams in DELVE</h3>
+              <p>DELVE's catalogs are too large to search the way smaller surveys were searched, so I built a pipeline with <a href="https://github.com/astronomy-commons/lsdb" target="_blank" rel="noopener">LSDB</a> and the HATS format that runs isochrone-based matched filters over the full catalog without loading it into memory. The same design scales to LSST.</p>
+              <p>With it I found a diffuse extension of the Sutlej stream whose stars match the population of Tucana III, a disrupting ultra-faint satellite. I'm testing whether Sutlej is Tucana III debris using isochrone fits, distances from blue horizontal branch and RR Lyrae stars, Gaia proper motions, and disruption models that include the Large Magellanic Cloud and the Galactic bar. The paper goes out in November 2026.</p>
+            </div>
+          </article>
+
+          <article class="project">
+            <img class="fig-img" src="aau-members.png" width="1400" height="720" loading="lazy" alt="Likely members of the ATLAS&ndash;Aliqa Uma stream: sky positions along the stream track, proper motions against the model track, and a color-magnitude diagram, colored by membership probability with BHB and RR Lyrae stars marked">
+            <div class="project-body">
+              <h3>Weighing a dark subhalo with a kinked stream</h3>
+              <p>The ATLAS&ndash;Aliqa Uma stream has a kink that a passing dark matter subhalo may have caused. I built a probabilistic membership model that combines photometry, Gaia proper motions, and spectroscopic members to decide which stars belong to the stream. Those members feed a simulation-based inference of the subhalo's properties, in a paper led by L. C. Marin for the LSST Dark Energy Science Collaboration.</p>
+            </div>
+          </article>
+
+          <article class="project">
+            <img class="fig-img" src="ngc6744-dwarfs.png" width="447" height="255" loading="lazy" alt="Survey image of the field around the spiral galaxy NGC 6744, with boxes marking candidate faint dwarf galaxies and three candidates enlarged in insets">
+            <div class="project-body">
+              <h3>Faint dwarf galaxies around NGC 6744</h3>
+              <p>NGC 6744 is a nearby spiral much like the Milky Way, and its faintest satellites test the same ideas about dark matter as our own. I searched for ultra-faint and diffuse dwarf galaxies in its group using Gemini spectra whose signal sat barely above the noise, and developed algorithms to recover that signal. The project continues with Gemini observations in semester 2026B, and I'm presenting it at AAS 249 in January.</p>
+            </div>
+          </article>
+
+          <article class="project">
+            <img class="fig-img" src="blanco-dome.jpg" width="900" height="1200" loading="lazy" alt="Elliott with his arms raised in front of the Blanco 4-meter telescope dome at Cerro Tololo">
+            <div class="project-body">
+              <h3>Observing</h3>
+              <p>These are the telescopes I've worked on so far.</p>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Telescope</th><th>Site</th><th>Program</th><th>Time</th></tr></thead>
+                  <tbody>
+                    <tr><td>Blanco 4&nbsp;m / DECam</td><td>Cerro Tololo</td><td>DELVE</td><td class="num">2 half-nights, remote</td></tr>
+                    <tr><td>Ir&eacute;n&eacute;e du Pont 2.5&nbsp;m</td><td>Las Campanas</td><td>SDSS Local Volume Mapper</td><td class="num">13 half-nights, remote</td></tr>
+                    <tr><td>SMARTS 0.9&nbsp;m</td><td>Cerro Tololo</td><td>NOIRLab REU</td><td class="num">3 nights, on site</td></tr>
+                    <tr><td>ARCSAT 0.5&nbsp;m</td><td>Apache Point</td><td>ASTR 480</td><td class="num">2 half-nights, remote</td></tr>
+                    <tr><td>Amateur wide-field telescope</td><td>Vi&scaron;njan, Croatia</td><td>Automated g/r survey</td><td class="num">3.5 nights, on site</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- PUBLICATIONS -->
+      <section class="view" data-view="publications" hidden>
+        <div class="section-gap">
+          <div class="cv-block">
+            <h2>Publications</h2>
+            <ul class="pubs">
+              <li><span class="yr">In prep.</span><div><span class="me">Burdett, E. S.</span>, et al. <span class="t">A &ldquo;Tributary&rdquo; of Tucana III? The Sutlej Stream in DELVE DR3.</span> To be submitted November 2026.</div></li>
+              <li><span class="yr">In prep.</span><div>Marin, L. C., Nguyen, T., Arora, A., Shipp, N., et al., including <span class="me">Burdett, E. S.</span> <span class="t">Simulation-based inference of a dark subhalo perturbing the ATLAS&ndash;Aliqa Uma stream.</span> LSST DESC.</div></li>
+              <li><span class="yr">2025</span><div>Wainer, T. M., Davenport, J. R. A., Bellm, E. C., Wang, Y., Caplar, N., <span class="me">Burdett, E. S.</span>, et al. <span class="t">Crowded Field Photometry with Rubin: Exploring 47 Tucanae with Data Preview 1.</span> Research Notes of the AAS, 9. <a href="https://doi.org/10.3847/2515-5172/adecef" target="_blank" rel="noopener">doi:10.3847/2515-5172/adecef</a></div></li>
+            </ul>
+          </div>
+          <div class="cv-block">
+            <h3>Talks</h3>
+            <div class="rows">
+              <div class="row"><span>American Astronomical Society, 249th meeting</span><span class="when">Jan 2027</span></div>
+              <div class="row"><span>DELVE Collaboration Meeting</span><span class="when">2025, 2026</span></div>
+              <div class="row"><span>NOIRLab Chile REU final presentations, La Serena</span><span class="when">2026</span></div>
+              <div class="row"><span>UW Astronomy Astrofest</span><span class="when">2025</span></div>
+              <div class="row"><span>UW Society of Physics Students Symposium</span><span class="when">2025</span></div>
+            </div>
+          </div>
+          <div class="cv-block">
+            <h3>Posters</h3>
+            <div class="rows">
+              <div class="row"><span>Mary Gates Undergraduate Research Symposium, UW</span><span class="when">2026</span></div>
+              <div class="row"><span>UW Astronomy Summer Research Poster Session</span><span class="when">2026</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CV -->
+      <section class="view" data-view="cv" hidden>
+        <div class="section-gap">
+          <div class="cv-top">
+            <h2 style="margin:0">CV</h2>
+            <span class="cv-note">Full CV available on request</span>
+          </div>
+
+          <div class="cv-block">
+            <h3>Education</h3>
+            <div class="rows">
+              <div class="row"><span>B.S. in Physics and Astronomy, with departmental honors<br>B.A. in Philosophy, with departmental honors</span><span class="when">2023&ndash;2027</span><span class="sub">University of Washington</span></div>
+            </div>
+          </div>
+
+          <div class="cv-block">
+            <h3>Research</h3>
+            <div class="rows">
+              <div class="row"><span>Undergraduate researcher, UW Astronomy / DiRAC Institute</span><span class="when">2025&ndash;now</span><span class="sub">Advisors: Nora Shipp and Peter Ferguson. Stellar stream identification and membership modeling in DELVE.</span></div>
+              <div class="row"><span>NOIRLab Chile REU, La Serena</span><span class="when">Jan&ndash;Mar 2026</span><span class="sub">Advisor: Bryan Miller, Gemini Observatory. Faint dwarf galaxies with Gemini spectroscopy.</span></div>
+              <div class="row"><span>Undergraduate researcher, UW Physics</span><span class="when">2024&ndash;2025</span><span class="sub">Advisor: Samu Taulu. Sensor-noise reduction for EEG and MEG.</span></div>
+            </div>
+          </div>
+
+          <div class="cv-block">
+            <h3>Honors and awards</h3>
+            <div class="rows">
+              <div class="row"><span>John Baer Prize for Academic Achievement, UW Physics</span><span class="when">2026</span></div>
+              <div class="row"><span>DiRAC Summer Student Research Prize</span><span class="when">2025, 2026</span></div>
+            </div>
+          </div>
+
+          <div class="cv-block">
+            <h3>Teaching</h3>
+            <div class="rows">
+              <div class="row"><span>Reader/grader, ASTR 321: The Solar System (Toby Smith)</span><span class="when">Spring 2025, 2026</span></div>
+              <div class="row"><span>Reader/grader, PHIL 120: Introduction to Logic (Conor Mayo-Wilson)</span><span class="when">Autumn 2025</span></div>
+            </div>
+          </div>
+
+          <div class="cv-block">
+            <h3>Service and outreach</h3>
+            <div class="rows">
+              <div class="row"><span>Undergraduate representative, UW Department of Astronomy</span><span class="when">2026&ndash;now</span><span class="sub">Bringing the concerns of astronomy undergraduates to the faculty.</span></div>
+              <div class="row"><span>Field research with Paz y Esperanza, Peru</span><span class="when"></span><span class="sub">Supported disability, Indigenous, and women's rights advocacy in Lima and the San Mart&iacute;n region.</span></div>
+              <div class="row"><span>Eagle Scout, Scouting America</span><span class="when"></span></div>
+            </div>
+          </div>
+
+          <div class="cv-block">
+            <h3>Skills</h3>
+            <p>Python (NumPy, Astropy, LSDB, HATS, MNE-Python), Jupyter, LaTeX, NINA observatory automation. English (native), Spanish (limited working proficiency).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PERSONAL -->
+      <section class="view" data-view="personal" hidden>
+        <p class="coming-soon">Coming soon.</p>
+        <!-- Travel photo picker, kept for later. Remove the hidden attribute below to bring it back. -->
+        <div class="personal" hidden>
+          <div class="notes">
+            <div class="note">
+              <p>I enjoy traveling to observe and get into nature.</p>
+              <div class="flags" role="group" aria-label="Countries I have visited. Choose one to see a photo from there.">
+                <button type="button" class="flag" data-c="us" aria-pressed="false"><img src="data:image/png;base64,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" width="32" height="24" alt="United States"></button>
+                <button type="button" class="flag" data-c="ca" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAE5UlEQVR42u2afWwTZRzHn+vrXduxl3Yro+tmx2RbV9DFGUU2ZEvALFF0QtRATMQoJBAgRpJFjPElMRJNGEtkIgNlzLlZmLxExBiMQSEIDpBkBA3Zyrq+Ufq6rXfdXa/nH8Ux164v2627257fX3d5fs/T5z79Pr/f8/zukJsVhWB6ptqyPW/7LsA9czbtcR3+YpqDCAA0CAgCgoAgIAgIAoKAICBoEBAEBAFBQHMPEIKwRnnk4nlWH07ACUAME2aHzu+/Wht3MhTJGqBweE4tMWfzZ7TP6zV2wBgUwwKXLgT/vgkAcLW2sCmiOQPo3oHmyEXI5fR1f8fOoAjCDUCpz4M03wkHRsZuies9+NUrY7euQy3/c77TzxAEnxXEMKn2oL2e2/Urfd1dkb7O/U3jWymHzXe8EwBAe9z2D98xbXgBwbDZAiRiQUACYapd0FI97XHb3m/0dLVnPfdi4I8LEwP253uD/bd9xzrDBK6oXjWLaZ4FQEyYTpkpikq0ReTgQPBWr+NWb7RDyOX0HD18n2Z5xXxM89IyfZKemH7pfMxi6JKyZD0Ny+bjUQMtS2rhCLOyxfmaB4uGwPmX5hmQVBZzt7VaG3emqiCs4oF8KLu1r+EZ2u+bufQ6MwoCE/8ohiAoh20ioKOH/GdOOps/jdyKNVoBJksstIr7AYge8g9sfpWymN1treMd8CuX8J7LM6cgFrJY9DwQDOtbVSXKU2fWr8UMywQo5jvdHbrrAAC4WveL8zXZL22MpCf82p/JKIgZHTVve5009QEAPO1fyR59DP/rKu3zDp//JXTXoXpjq6zqCQ4DiqXkjNrV/h9O3Gtpim6yf7RbpMrNqFuDluoTAkL1BgCApXEHcb1nLAyZt24a7yN/fDmnl1hMy3p+fZzWwR1vEjeuSYp0CSYnk4vzNfaP3xs+99Ok8sUw+YqVnN5JxzT58mrhgkx6yD+Zg2ljg0CRkWCjhwdMr6wlem/E8ZEtreTrPkj+VE2C5x8ZTjhIfDpja5CXgKS6knQcJnPzOA8oVrII44GEAZgVIwdMnN8oRtWkvV3t/9RUBi5fTAMgr7Gjf109Zbdy+LAalU2z1r2sqKlNz1kJkUhzt701/jjCgxiEiCXafV8qN22ZaTrCHKWu4/uMujW8DNLqt3fnf/AJK4EgdhIoWbL4+Fm03MD1GBTHstdvKDzQhqAo6yMramqLO0+L8tS8rwcpVjxd3HFSqFSxOKbytc2FLV+np1CdjoKZtLR8sfGMtPhhNqKOULNnn3rXuzO3cmcBEABApF6o6zolq6ya1lwXZOqOGDOfbQBptPRVFAUy+UPt3fInq6f8Q9q9LVhKiLkfpGOUQepWT7lvklVazikoyZJrxCibdeqnCos5/YDYeHEIklUyZTG7jxwEAIgXLhJrCsSaAski7X8XBd4TRu+xb0tOnaOsFtI2SFktpM1CWS2UdZC0WRiCGPr5R8zwCP8ApYASRUvO/ibRFsVupukwHhBm5wizc6Jf9dBuV8jn5aWCkv+ASqSKV5pgSJIJBifN70pVypspLpdcpwKaogAA47/64IJxDxCOQ0CxLUyNglTfnc5LBQUgoEmDNAAgPHsfk0EF8R4QyUFAIu5MpejgN2xvTJE5pSBuGgQEAUFAEBAEBAFBQBAQBAQNAoKAICAICALim/0LRnK48YE2v3IAAAAASUVORK5CYII=" width="32" height="24" alt="Canada"></button>
+                <button type="button" class="flag" data-c="mx" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAFsklEQVR42u3be0xTVxwH8HN7+7rtbQsthT6VtgwsFEQUBJHKhrrhXBxKmIsak8VEZ8jcskXNtmT7Y/6hS/bSTLOY/aN7hOlwcyoOnyg6QBGqtpZXKfT9bqG0t7e33X/+sWR/IqQ93//uP7/88sk959yccy4C9r0K5i00BKG+vwLmM4+EJfNanwZgIBAEgkAQCAJBIAgEgWAgEASCQBAIAkEgCASBYCAQBIJAEAgCQSAIlPmhL55WEnORS9+0A2IuDVA2X7nijd3S4nIIBAAAZDw6PdzN5kuRRNA8MsWKJWxzBstAd75Ov2b7XnmRLkuBgiGby2HQlm4a+v2Yc9zMExeQAo2uVjnxsG/S6o3E4gnPDY9zou3QcfESdTbOQTb7Y4TGdg39yKDCEV8gEXZFTXeHHxkBSAmZABAJNJXsM4yd+GCHz+3MRiAuR/hkoANn2BmcSX1bMx+nS0srYmkmSqOTacAVC5nxWHo2PGaxXT55JBuB1KrV23aetIbyvJSAJPhUgjTcHU6EZwL2AMnCItEEoAGFWCATsQeu/mExG7MIiPDcCkz+nEpTxifXJoORwpp2k2EwRLBIDO8ftZkCyWVSXC3CijQFHB4T4zJZPOzX40eyCAjFS6IE12i8bhz+S1f+mkxWkfBOpkNTIu4sD6Oz+XwhAzDolMMdBGQ8HotzuDSH+UkWAdE5UgTXIOkUKwnSsQA1Y0qJiiwzqC0MluYy1pQI3Dmahtb32fkagp7P5MnDhIBIUpkPRFGkebQXAJCam2YxOTNzQWVp/Yz5ivX+p8vXrBoZ96BEorJEYpmj9fb0Fzdu3vnRF8X1G3MLl5VVrsxTFgIAyCQRCjkzFujCxS9N5jsAgNjVCwKrn0XHkghdmOv1eBMec2djrY5E8Zvm6OBTT2Ee/l7LOhRF32o/zBJKKCw3R1EEADj7y6G/r3+fsR+KgZBLIdOkyAhLs2HMNOorLvCPd3qigQKJljnjdxM2iUQWT3i4RNQXmsvFWac+2fPytndadu+dnp7yOR0AgGQqiaD0jAVqbWqxO0fTgEZpNS2XL9It6dPb9pRF42nTbd7b30qqBkk6/uyp4dRXx4QqAQZSLrvlzvkf7l279OHXZxgMJki49JVrNcVrX+h6AlYVzV91BEE+e33n80dMoLI6LZFoRFqgplKpLoMhQpCGxyNxtthMxrstdp5AION668pS9StARWMbN6eQIdNu1Tfm4Y6l5U099zuTCEuuWEmjoc9ruo6eyJw3iKJIj99muvebQlF6QN/wbl1t+5mfuohwx3SInBoPeAPywUG54+GuOnIgrlXZb9VuaP/O8HSHrp6TxxkZ6/tnoLNIvWJ1dWvGDjEUZVQt32SzP4t5B/h4M+I4uX99gySndcIfP9XVMZhOYky2oHbrUV8wGgnLxKpzt3vNtumOpUv2q1dzQkk2C6te+eYLXuaRF3+RPO7ttzhcNr+7vrbNEUP3Gj20VOoAfUJnPpvOLdxlFb40a/t8a6sHV9w03q0UyjbW6Mcm+gHhkRcswYQV/6k23xfJF2C7gy2uYcz0WR91uT2TtU0Hz1Up/nRFrhh86+j+YCC0xUdrzo9/PKKXKyQH6/R5Atm1m6eHHndV6JqKtJuzZT9Io6oetzywTA5z/edzOGubsbF8mexeDz/um63AUv4Y1pzDwlmzoQibcJ5zuUeXKHXVVVsWpFVkAf/VIL03HjwbNVnMTvd4edk6ubLKRmFyApWrZGZz942eM5rCirqqDSqljoEr/69IBg6x52GIX6kRNuCi2yOjvQJeritgnU2L8octEVFVMOyUSzVSSbFEvoqBixewyQXek0ZRRnnp+vLS9QCA+xOmmqGR8yrR9ulkyebDYHFkEZ1q1Km1QK3dBxZX4LkYBIJAEAgCQSAIBIEgEAwEgkAQCAJBIAgEgSAQDASCQBAIAkEgCASBsiH/Ag8MY1fvPU/6AAAAAElFTkSuQmCC" width="32" height="24" alt="Mexico"></button>
+                <button type="button" class="flag" data-c="pe" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAAhUlEQVR42u3QQRHAIAwAwQQFRQMM/u1QPFRDVWSGx56Ae2zuZ0Rdmes7UdnbZ+m/hQABAgQIECBAgAQIECBAgAABAiRAgAABAgQIECBACAABAgQIECBAgAQIECBAgAABAiRAgAABAgQIECABAgQIECBAgAABEiBAgAABAgQIkAABAgTokn6kbgScLEdCoAAAAABJRU5ErkJggg==" width="32" height="24" alt="Peru"></button>
+                <button type="button" class="flag" data-c="cl" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAACOUlEQVR42u3ZX0hTURwH8N/xzv3V4Z/IjV03JTNCSlZqGGxTBJUCZ+VLGGI+hY8N7LXnglDxIXzqafTgQ/SwpgSlwQIFFUZMUJxSTh9yoHO25p3XB3UM12yGBHq+36fLOffchw/nnN89HEb1bvpfkX0P6awlhxAAAQhAAAIQgAAEoGxjrSy0GLQAyhinTexoNAMoY+45xPsNpZwAKU46wGLQXq8okGUyFKnXwjHMoKN50GAmIsaIk0mU8w/r61CqlPclphCYTq3QqASNStCqFRqVUKRX3r52Yb/XYb3YXGeI7+ymDonGpKlAmBegRy1lr/vqVMo/zzJBYKP9jaktwVD0ruszR0vsjSdY2+MNhqLZfOj9l5XqLk9geZOvPci/uFHd5fnwNXTMO1JCdg3OOJ9NRLYlHjfpyLZ0xzXeNzQrJeT03rX1mKP346u3c7xXsZfuwPC7hfT2sclVn/8nyjwRUVNNSXpju11k+A8iosti/hWLfv85vrO7dbjd6HW5ycLPNVC7XUzW8prH3hvd3sDSQcFqs4kAIqfdlKzl/sWN+R+Rm91e99gyEbXZTLwDFeuVtVeLnw5Mp9byX/FE53PfkxdT5ca8cqPuvAKxbG5WW28Zw5u/JzOcIayVhZdMeSOfvv/1O2fxZpXh6vmUT/O8BUAAAhCAAAQgAJ3bsG9VZihgBgEIQAACEIAABCAEQAACEIAABCAAAQgBEIAABCAAAQhAAAIQAiAAAQhAAAIQgACEAAhAp509v4KThEIlbT4AAAAASUVORK5CYII=" width="32" height="24" alt="Chile"></button>
+                <button type="button" class="flag" data-c="gb" aria-pressed="false"><img src="data:image/png;base64,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" width="32" height="24" alt="United Kingdom"></button>
+                <button type="button" class="flag" data-c="nl" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAAgUlEQVR42u3SMREAIAwAMYoOFjaUYA4vWCwKMNDLS8h93LGa/nUEgAABAgQIECBAAgQIECBAgAABEiBAgAABAlShyEwKDgIECBAgQIAACRAgQIAAAQIESIAAAQIECBCg6sXch4KDAAECBAgQIEACBAgQIECAAAESIECAAAECBKh6D0ObBW84sX4pAAAAAElFTkSuQmCC" width="32" height="24" alt="Netherlands"></button>
+                <button type="button" class="flag" data-c="pt" aria-pressed="false"><img src="data:image/png;base64,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" width="32" height="24" alt="Portugal"></button>
+                <button type="button" class="flag" data-c="es" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAHEElEQVR42u3bS2xU1xkA4P+c+5x75955ehjbYA84fhKDLWqDwIECRbQKkUIS0aRS1VbKtlJbNZXaZVWpUrrooqKbPleV0lWq0EqE0NDwxpASIIY42MZj7Hl53nfu+57TBSgorVBTRCUznH85c2YW3/z/f875Zwb9uaMbWDw8MCNgQAyIATEgBsSAGBADYsGAGBADYkAMiAExIAbE4kGg+vsMgWUQA2JA7QhUboBhM6CHx+XC+tvl+JMOxD/etyMEHLShahDfKS80Rn1US9QXOKApvYWpgfHTCkQp5Ovppl0LoNM0SoOdBgnB+LoryCnGJPA9uHI7qYcVTOvJiBZXVhF6ykpsoZDyrHxPzObBCyutxiw/80sNkYyxFP30d1pQwJKCk3KjN+EsFxvVpk7p05RBlEKx0iQnxflbmlWF1rigX4xhjNHcnH3LJ//Q7r4reIeC3PGInNSUQ6XsMETD8KQk0ePJoLCoVRY5awWRZIXnfby35G8mzUtVFDK8Xiy8WIFahYu5Vp6Ul6CzI/4ENaPHkEEIwVCmmJ0AOmJ583GnbrpNXtho2UuiueKF+k1/CUmALF0KvZDXdEhp+afiLlZfhKVVGNoKPH+/0C6cgVUD5LDyzxaMd5BWzsYciEltJu8NCxxAq6cLRkbvFxchUKpCInL/5e0GtHQJPjgPqAvWL8DuHz1oRsffg6YsVHKe2AKhBVqMQxJFMhFSgmp6U3se6Jz+LZQ0UGuw6zDo6bYrscgo9EjgNlD3bkopFOfwyjkZIRT3QGiA0hQphQBI9OARWec4AXgEqgzzDhAKafy2KlQSB8G9A+oowlHahj3IcqERAFJpuQ6bUtBa4Yvv6BxCjmDXR6rxqyme43wp0Ae+IyNMBD6YK1SMU+HOw8QPPDgNUFk1wA2D51Kytrf8RwSKqdA5/AvbIQnyFkIf3leTrOWtNY+CsauYOZ8GgMC24dQcbO4Qb1SjyphdLDiTXWACxpDu2uWIe5v1FVX8fTtu8xSkyHZB28ZJsc8eMzc3IzshsQsiU+BqJgBwsuzteEa+UIqVqKUp1W6JF4V7i0PhjWLyEA5PrvEz46MfSHzfd13XcQPHBUIAAPgV4VZ5v2kJs8tTXEu8t8y9etMZTgVpVeRF3qO+7wcEHBds1/c8LwiCNjwHtQpo5ljIrH0zKLXueijrx6gaAACyseuLtsv7hKM+djA1crl1z+9yckX3ZllvEmN/muf5G39UcTXiFo9jfJwbUD7i1NFvtER1jQJxP/72/3yxuP4npVng4NlX0OSBSF8u2lG0GuDnhOpkLZXJ5pwvbxBP+p/y0+rE4skLkdJCyNO4ga6WbeGuCIQl9+ZfEumiMLkD73jNbrmknDVXUWo4aJMSQwi6p0y7jCJffVEZ29m4Y3WMmpnnXAQQXg3BrNwopbnz/Lnk1Nl9U+cO7nzv3ELQH0dbuqzBMNUEABh+yQ5lbLtuRScPoJFJr0q6J522KrH0CEz9rLEgSY0bt+xps9nJZ3251E84ULjboXHlHTsfzWXSw/olidqLiU3zR9/Ue5IACAAFQcDts62PZfOTojyxJHWntv3EVOT26kGUQukjvvjBm87Va/pubeMePzcdTmSqoY2+8S7R9jarF4VEtpHvX7fqpHeUP0xsmVZDCBAKDGpdj8D26PBhu3JUKnz3e2hsoPw8VkZJW+1i838XZo/G8NBA5Ne/2vCtbk789wVKDO2nJ4ZOZL/y/ukD3SfFshxg6n4iYIypEACAGIZNPxhL/+E3NK5f+2k8fxO1VQYp3X7kuap+5GXTcuEhY3l9fbB95IT4tqbLRBrymlVZHbPN6xL2H3wkoXg8+vWvBY2/qUnaVhmUHqSbX/X/6zKRR1KIoIRvrcDMQJdfB7nPwSHv8z0ftr7uaR3t1YMQAlkFYlwEO0CkAgAcsul/jFGRT7EE1KA85raeyQICzwdKEAdVAAicWmDOIi+vRtvxLlaoQ632BgAUeeiJQFemUrwWBvjcWcazhuTEejF9ovlXTZww7emY9kK1styb6pshBHK5YwQdA4AKBx3R9gKyPf7U4rawUnV96gcy4upf2pCdT0Vtd+XBvYwXeieOwDhX+PnH6VdXKIFQn1t6K9nzektT4czi6J0WCYmW73PZxdRr+tk1O4R9FCDfxyutyeUijqm6YZsdymWA7L6X7l6c1gqZVK0iIW1zcfeehYoBGHNv/FC+dD1YmhPidv/355/ZsggAFXPj+dzgs+vojZw9mPApPdtWE0XPR1eW0qJAckZ0tCNrOPJIV/XeU0EAhoVsbswmiXxVESWIyi1VKCv0qiLBZ2lyOZvu0UsX8wN9kULDCW3vXV6zX3Kw3wf938YdDIgFA/oiPYj965llEANiQAyIATEgBsSAWDAgBsSAGBADYkAMiAGxYEBfOP4FyNwiNKgVoqgAAAAASUVORK5CYII=" width="32" height="24" alt="Spain"></button>
+                <button type="button" class="flag" data-c="fr" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAAhElEQVR42u3QQQ3AMAwEwasRFGm4hGJ4WA0KS33MAtjHPMnOWFXpXpns1Jtv8F8RIECAAAECBAiQAAECBAgQIECABAgQIECAAAECBAgBIECAAAECBAiQAAECBAgQIECABAgQIECAAAECJECAAAECBAgQIEACBAgQIECAAAESIECAAP2kCy8DBYBq+WURAAAAAElFTkSuQmCC" width="32" height="24" alt="France"></button>
+                <button type="button" class="flag" data-c="ch" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAA8UlEQVR42u3c0Q2DIBQF0GfTARzBERzBTXQ0nUTdwBEYwQ3sBlUTUtrm3PhJEI6BBIJUR8i7PBAAAgQIECBAgAAJIECAPp5nyZf3fTTNebGUYpqKNfIo+MzzcSXzXLCRhpg5CBAgQIAAAQIkgAABAgTo11LlPLwwDNH3N8q3bdT1ebF9j227Ue00xTjm6lPWDbOmia7L/xHr+l6162qImYMAAQIESAABAgQI0Hcn61ospViW8ovVlHJ2yuEFhxfMQYAAAQIECJAAAgQIECBA/5WiP7OM46X9o7z7OzdTuZrCEAMECBAgQIAACSBAgAB9W14YehUIOHdW5wAAAABJRU5ErkJggg==" width="32" height="24" alt="Switzerland"></button>
+                <button type="button" class="flag" data-c="at" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAAf0lEQVR42u3bQREAIAwDQYoClOBfAq6CAgyUPQk7+abO2kPvJgJAgAABAgQIECABAgQIECBAgAAJECBAgAAB6lAloWBBgAABAgQIECABAgQIECBAgAAJECBAgAABAtS98hezIECAAAECBAiQAAECBAgQIECABAgQIECAAAH6oAu8WwWXWLnw/wAAAABJRU5ErkJggg==" width="32" height="24" alt="Austria"></button>
+                <button type="button" class="flag" data-c="it" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAAiElEQVR42u3QQQ3AIBQFwQd6EFAFuMFM1dQFipqg4iccZgXsYVrembJ62r++VLbHU/rvESBAgAABAgQIkAABAgQIECBAgAQIECBAgAABAgQIASBAgAABAgQIkAABAgQIECBAgAQIECBAgAABAiRAgAABAgQIECBAAgQIECBAgAABEiBAgABd0gHkTwTAscnLFQAAAABJRU5ErkJggg==" width="32" height="24" alt="Italy"></button>
+                <button type="button" class="flag" data-c="va" aria-pressed="false"><img src="data:image/png;base64,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" width="32" height="24" alt="Vatican City"></button>
+                <button type="button" class="flag" data-c="hr" aria-pressed="false"><img src="data:image/png;base64,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" width="32" height="24" alt="Croatia"></button>
+                <button type="button" class="flag" data-c="si" aria-pressed="false"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABICAIAAACGBWc0AAAETElEQVR42u3YXUxbZRgH8P85/ZDSceD0i3YgtQsDBm1FHAkuro7djG0hDJZRnJoQQqIsBqNyRaZh2ZYZMzRzc3HRGd1krAnsYi7EYUT2gVOxTK2UsYFuDIRSsBt0sLFBvUBBscXS6EVPn/9Ve57nvfn1fd/T92V8Ph8ogcMSAQEREAEREAEREAEREIWAQog4hDFtx775/GR3W8f97tGYmw80fy1pWE9qnCfHxD61+eH1L+bKZGH/AzBBnsXGnD0f7rO3fTV24brCNaOcfViUd756R92msjeGR3gA9e/sHhxWvrJnx9yoHFX/uiymtGJF6pYnwhRIVFNTE0xfe0q29dvtTo/yji96fn2yMy63oqtXPzEZBUAinp6eYb++nD7X0D/BXezlEm27VxcYxTqdkJdYXJwYtxY+7Lxq6LxqmPt68tP1fsdyGBfxvMA36WjFskWqCVr3IlUOXpFCIXAgEc+rMeq3lP3olf5Lxa9Xfhxw9uE2y3ECf4uJFAoO424o/WxPP6StzP2k53pCoLFKlVT4/4NEPB+L8UDVRXQAqNSRAKRUKv65S/+ZAweSA5UUuCVWqSICiA8AZLHEVlYm7typ97++4BGp1cIHEqvVmr9v0ufOPWa1agAcPJgCoLpar9NJMzKiOzpWp6bK5tri4RbHxwv/qCFOTIzH/Lu8vj7dYok1meRbt6rNZjkAmYxtaDBynMholJ84kVFY6OjruwdAB5ckKUn4M0ii1y+Ha/bz3r2GkhINAJ4Xb9s2v3zWrOGMRjmArKxlx4//8X9ajwGpwRDGM4hhWoNs/QyDACoqlldX6/+12WKJtdnSrVanHv05JWNdJa0Cn0EA7uIhmYw9fDglyP7iYk1+vvIR3OzCyoi4D/oJaemT37e0eIIf0t0+MAFZpNwHXUR2EZrq6jasWiVnGJw65W5sdEskbGmpduNGRUeH98iRX4eG7mVmxpSX65KSopqaRs1DX5xHTnjfBwFfBt/djKfLZe/ml5lUKolWKx0enmJZhufFbvf96GiWZRmvd1qrlbpcUz4fzpwZ2WUveh5vDkAbvkAioDT4bidSqh4cet+VK5UyUVHs2rVxWq3U4bjjcHilUjYtTW4yyW/cuDs4OGW3e7Pb3upCcgueDOPpwyxxBgGoQS0H7+l1b9tsGRqNxG9PVVXvaG1tAc4W4mh4ry9m6Zf2NXiVwcym1qqsjAvNzb8tqF67Nmk2t0/W7inA2XLsR/gnlEv1l7HrZ+g/Gtm+b8N7eXk/zr7XnM6JsrIr1pSjrzmeTcDgMzg0Cl4AQEteYnMxoO8lfJAJZwM2f5dsNfQ0P4fG24jZjxfsMEMQCWUPWpBk/GLF6Ty0XsLj9Si4DBMElP8ASNgJZZOOtBAQAREQAREQAREQAREQhYAI6P84jnWSwaKnVZpBtMQIiIAIiIAIiIAIiEJABERABERABERABEQhIAIiIAIiIAISRH4HCuUvojJwVGcAAAAASUVORK5CYII=" width="32" height="24" alt="Slovenia"></button>
+              </div>
+            </div>
+          </div>
+          <figure class="travel">
+            <img id="travel-img" src="travel-cl.jpg" width="720" height="960" alt="Telescope domes on the summit of Cerro Tololo under a clear blue sky, with the Andes behind">
+            <div id="travel-empty" class="travel-empty" hidden>Photo coming soon</div>
+            <figcaption id="travel-cap" hidden></figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
   </div>
-</section>
 
-<hr class="divider" />
-
-<section id="research">
-  <div class="wrapper">
-    <h2>Research projects</h2>
-
-    <div class="research-card">
-      <div class="research-meta">
-        <span class="research-org">UW DiRAC Institute</span>
-        <span class="date-badge">Jan 2025 – Present</span>
-      </div>
-      <h3>Stellar Stream Characterization</h3>
-      <p>Seeking to characterize stellar streams using large survey data. Built a computational framework to efficiently filter massive datasets, enabling scalable study of Milky Way substructure. Created exhaustive catalogs of likely stream members. Aided in DELVE observations. Project details available <a href="https://github.com/elliottburdett/spreading_seas">here!</a></p>
-    </div>
-
-    <div class="research-card">
-      <div class="research-meta">
-        <span class="research-org">NSF NOIRLab · REU</span>
-        <span class="date-badge">Jan – Mar 2026</span>
-      </div>
-      <h3>Dwarf Galaxy Spectroscopy</h3>
-      <p>Developed an image reduction pipeline and performed spectroscopy on dwarf galaxies. Conducted on-site observations at Cerro Tololo Inter-American Observatory near La Serena, Chile. Project details available <a href="https://github.com/elliottburdett/catch_dgs_in_nw">here!</a></p>
-    </div>
-
-    <div class="research-card">
-      <div class="research-meta">
-        <span class="research-org">Carnegie Las Campanas Observatory</span>
-        <span class="date-badge">Nov 2024 – Jun 2025</span>
-      </div>
-      <h3>Local Volume Mapper — Remote Observer</h3>
-      <p>Remotely observed for the Local Volume Mapper, a flagship survey of the interstellar medium conducted as part of the Sloan Digital Sky Survey (SDSS-V).</p>
-    </div>
-
-    <div class="research-card">
-      <div class="research-meta">
-        <span class="research-org">UW Department of Physics</span>
-        <span class="date-badge">Sep 2024 – Apr 2025</span>
-      </div>
-      <h3>EEG/MEG Sensor Noise Reduction</h3>
-      <p>Investigated a novel method of sensor noise reduction for electro- and magneto-encephalography (EEG/MEG) projects using signal processing in Python.</p>
-    </div>
-
-  </div>
-</section>
-
-<hr class="divider" />
-
-<section id="experience">
-  <div class="wrapper">
-    <h2>Education &amp; teaching experience</h2>
-    <div class="timeline">
-
-      <div class="tl-item">
-        <p class="tl-date">Sep 2023 – Jun 2027</p>
-        <p class="tl-role">BS Physics &amp; Astronomy · BA Philosophy</p>
-        <p class="tl-org">University of Washington</p>
-        <p class="tl-desc">Dean's List all quarters enrolled. Built observing experience through ASTR 480 (ARCSAT 0.5m at Apache Point), ASTR 481 abroad in Croatia (Višnjan Observatory), and at the Manastash Ridge Observatory. Conducted field research with Paz y Esperanza Perú in Lima and San Martín region for disability, indigenous, and women's rights advocacy.</p>
-      </div>
-
-      <div class="tl-item">
-        <p class="tl-date">Mar 2025 – Present</p>
-        <p class="tl-role">Reader / Grader</p>
-        <p class="tl-org">University of Washington</p>
-        <p class="tl-desc">Graded for Astronomy 321 (Solar System) Spring 2025 &amp; Spring 2026, and Philosophy 120 (Logic) Autumn 2025.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<hr class="divider" />
-
-<section id="contact">
-  <div class="wrapper">
-    <h2>Contact Me</h2>
-    <div class="contact-links">
-      <a href="mailto:elliottburdett@gmail.com" class="btn btn-primary">Email me</a>
-      <a href="https://linkedin.com/in/elliott-burdett-823756299" class="btn btn-ghost" target="_blank">LinkedIn</a>
-      <a href="https://github.com/elliottburdett" class="btn btn-ghost" target="_blank">GitHub</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <p>© 2026 Elliott Burdett &nbsp;·&nbsp; Built with GitHub Pages</p>
-</footer>
+  <footer>
+    <span>Updated November 2026</span>
+  </footer>
+</div>
 
 <script>
-  const nav = document.querySelector('nav');
-  window.addEventListener('scroll', () => {
-    nav.style.background = window.scrollY > 60 ? 'rgba(10,10,15,0.9)' : '';
-  });
+(function () {
+  /* ---------- Tabs, routed on the hash ---------- */
+  const views = Array.from(document.querySelectorAll('.view'));
+  const tabs = Array.from(document.querySelectorAll('.tabs a'));
+  const names = views.map(v => v.dataset.view);
+  function show() {
+    const h = (location.hash || '').slice(1);
+    const name = names.includes(h) ? h : 'home';
+    views.forEach(v => { v.hidden = v.dataset.view !== name; });
+    tabs.forEach(t => {
+      if (t.dataset.tab === name) t.setAttribute('aria-current', 'page');
+      else t.removeAttribute('aria-current');
+    });
+  }
+  window.addEventListener('hashchange', show);
+  show();
+
+
+
+  /* ---------- Travel photos: click a flag to change the picture ---------- */
+  const travel = {
+    hr: { src: 'travel-hr.jpg', alt: 'A stone observatory with a dome under a starry night sky, its windows lit from inside', cap: '' },
+    va: { src: 'travel-va.jpg', alt: 'Arnaldo Pomodoro\'s bronze Sphere Within Sphere in a courtyard of the Vatican Museums', cap: '' },
+    it: { src: 'travel-it.jpg', alt: 'A white seaside castle above terraced gardens and stairs that lead down to the water, in evening light', cap: '' },
+    ch: { src: 'travel-ch.jpg', alt: 'Wandering the Immeasurable, a looping steel sculpture engraved with equations and milestones of physics, at CERN', cap: '' },
+    fr: { src: 'travel-fr.jpg', alt: 'Instant-film photo of paragliders with their wings on a mountain trail, with snowy peaks and a glacier behind', cap: '' },
+    es: { src: 'travel-es.jpg', alt: 'A glowing red crescent low over dark hills, reflected in a path of light on the water', cap: '' },
+    pt: { src: 'travel-pt.jpg', alt: 'Hilltop castle walls and a stone tower flying a blue-and-white flag, with the Atlantic Ocean on the horizon', cap: '' },
+    nl: { src: 'travel-nl.jpg', alt: 'Brick observatory tower with a dome, its wall painted with a 21-centimeter hydrogen wave and a tribute to H. C. van de Hulst', cap: '' },
+    gb: { src: 'travel-gb.jpg', alt: 'Backlit astrophotography prints in a dark exhibition room, with a skyscape of the Milky Way arching over mountains at center', cap: '' },
+    pe: { src: 'travel-pe.jpg', alt: 'Elliott in a yellow rain jacket crouching on rocks above Machu Picchu, with Huayna Picchu wrapped in clouds behind', cap: '' },
+    mx: { src: 'travel-mx.jpg', alt: 'Diego Rivera\'s mural Man, Controller of the Universe at the Palacio de Bellas Artes in Mexico City', cap: '' },
+    ca: { src: 'travel-ca.jpg', alt: 'Elliott in a striped hoodie at dusk, with snowy mountains under a pink sky behind him', cap: '' },
+    us: { src: 'travel-us.jpg', alt: 'Snow-covered Mount Rainier rising above forested ridges under a deep blue sky, with a skier carrying skis along the ridge in the foreground', cap: '' },
+    cl: { src: 'travel-cl.jpg', alt: 'Telescope domes on the summit of Cerro Tololo under a clear blue sky, with the Andes behind', cap: '' }
+  };
+  const tImg = document.getElementById('travel-img');
+  const tEmpty = document.getElementById('travel-empty');
+  const tCap = document.getElementById('travel-cap');
+  const flagBtns = Array.from(document.querySelectorAll('.flag'));
+  function pick(code) {
+    const item = travel[code];
+    flagBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.c === code ? 'true' : 'false'));
+    if (item) {
+      tImg.src = item.src; tImg.alt = item.alt; tImg.hidden = false; tEmpty.hidden = true;
+      tCap.textContent = item.cap || ''; tCap.hidden = !item.cap;
+    } else {
+      tImg.hidden = true; tEmpty.hidden = false; tCap.hidden = true;
+    }
+  }
+  flagBtns.forEach(b => b.addEventListener('click', () => pick(b.dataset.c)));
+  pick('cl');
+})();
 </script>
 </body>
 </html>
